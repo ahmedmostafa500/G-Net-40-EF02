@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace EF02.models
 {
@@ -14,5 +16,6 @@ namespace EF02.models
         public bool IsVerified { get; set; }
 
         public OrganizerProfile Profile { get; set; }
+        public ICollection<Event> Events { get; set; } = new HashSet<Event>();
     }
 }

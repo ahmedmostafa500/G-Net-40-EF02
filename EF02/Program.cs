@@ -8,41 +8,49 @@ namespace EF02
         {
             using var context = new AppDbContext();
 
-            context.Database.EnsureCreated();
-
-            // Organizer + Profile
             var organizer = new Organizer
             {
                 Name = "Ahmed",
-                CompanyName = "Tech Corp",
                 IsVerified = true,
                 Profile = new OrganizerProfile
                 {
-                    Bio = "Event Organizer",
-                    Website = "www.tech.com",
-                    LogoUrl = "logo.png"
+                    Bio = "Tech Organizer"
                 }
             };
 
-            // Attendee + Badge
+            var mainEvent = new Event
+            {
+                Title = "Tech Conference",
+                StartDate = DateTime.Now,
+                MaxAttendees = 100,
+                Organizer = organizer
+            };
+
+            var session = new Event
+            {
+                Title = "AI Workshop",
+                StartDate = DateTime.Now,
+                Organizer = organizer,
+                ParentEvent = mainEvent
+            };
+
             var attendee = new Attendee
             {
-                FullName = "Ahmed mostafa",
-                Email = "ahmed@gmail.com",
-                Badge = new Badge
-                {
-                    BadgeNumber = "B123",
-                    IssuedDate = DateTime.Now,
-                    Tier = "VIP"
-                }
+                FullName = "Ali",
+                Email = "ali@gmail.com",
+                City = "Cairo",
+                Country = "Egypt"
             };
 
-            context.Add(organizer);
-            context.Add(attendee);
+            var registration = new Registration
+            {
+                Attendee = attendee,
+                Event = mainEvent,
+                RegistrationDate = DateTime.Now
+            };
 
+            context.Add(registration);
             context.SaveChanges();
-
-            Console.WriteLine("Data Inserted Successfully ");
         }
     }
 }

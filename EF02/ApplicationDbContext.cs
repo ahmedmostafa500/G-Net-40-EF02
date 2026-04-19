@@ -22,6 +22,8 @@ namespace EF02
 
         public DbSet<Attendee> Attendees { get; set; }
         public DbSet<Badge> Badges { get; set; }
+        public DbSet<Event> Events { get; set; }
+        public DbSet<Registration> Registrations {  get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,6 +39,32 @@ namespace EF02
                 .HasOne(a => a.Badge)
                 .WithOne(b => b.Attendee)
                 .HasForeignKey<Badge>(b => b.AttendeeId);
+
+            //  One-to-Many Organizer-Events
+            modelBuilder.Entity<Organizer>()
+                .HasMany(o => o.Events)
+                .WithOne(e => e.Organizer)
+                .HasForeignKey(e => e.OrganizerId);
+
+            // Self Relation Event-Sessions
+            modelBuilder.Entity<Event>()
+                .HasOne(e => e.ParentEvent)
+                .WithMany(e => e.Sessions)
+                .HasForeignKey(e => e.ParentEventId);
+
+            //  Many-to-Many via Registration
+            modelBuilder.Entity<Registration>()
+                .HasKey(r => new { r.AttendeeId, r.EventId });
+
+            modelBuilder.Entity<Registration>()
+            .HasOne(r => r.Attendee)
+            .WithMany(a => a.Registrations)
+            .HasForeignKey(r => r.AttendeeId);
+
+            modelBuilder.Entity<Registration>()
+                .HasOne(r => r.Event)
+                .WithMany(e => e.Registrations)
+                .HasForeignKey(r => r.EventId);
         }
     }
 }
